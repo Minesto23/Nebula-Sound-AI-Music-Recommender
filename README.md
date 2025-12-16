@@ -2,25 +2,17 @@
 💡 “Discover the music you love without searching: intelligent AI-powered recommendations and playlists.”
 
 ## 🔹 Project Overview
-Nebula Sound is a music recommendation system powered by Machine Learning.
-Given a song input by the user, the application can:
+Nebula Sound is a metadata-based music recommendation system that allows users to:
 
-- Suggest songs with similar acoustic features
+- Search songs by name
 
-- Automatically generate personalized playlists
+- Search songs by artist
 
-- Deliver fast and explainable results, ready to play
+- Get similar song recommendations
 
-This project combines Data Science, Machine Learning, and software development to create a fully functional demo
+- Generate playlists
 
-## 🔹 Features
-- Search for songs by name (case-insensitive)
-
-- Get song recommendations based on similarity
-
-- Generate smart playlists from a seed song
-
-- Simple and intuitive interface for demo purposes
+This project uses Spotify metadata (without audio features) and demonstrates a full pipeline: preprocessing, model training, backend API, interactive UI, and Docker deployment.
 
 ## 🔹 Tech Stack
 
@@ -32,74 +24,116 @@ This project combines Data Science, Machine Learning, and software development t
 
 - FastAPI + Uvicorn: lightweight backend API
 
-- Gradio / Tkinter: interactive demo interface
+- Gradio: interactive demo interface
 
-## 🔹 How to Run the Demo
+## 📂 Dataset
+Dataset used: [Spotify Global Music Dataset 2009-2025 (Kaggle)](https://www.kaggle.com/datasets/wardabilal/spotify-global-music-dataset-20092025)
+
+This project focuses on metadata-based features to recommend songs, without analyzing audio directly.
+
+## 🧠 Model
+
+- **TF-IDF** for text features (artist_name, artist_genres, album_name, album_type)
+
+- **StandardScaler** for numeric features (track_popularity, artist_popularity, artist_followers, track_duration_min, album_total_tracks, explicit)
+
+- K-Nearest Neighbors (Cosine similarity) for recommendations
+
+Artifacts stored in model/:
+- knn_model.pkl
+- scaler.pkl
+- tfidf.pkl
+- cleaned_spotify.csv
+
+
+## ⚙️ Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/nebula-sound.git
-cd nebula-sound
+    git clone https://github.com/your-username/nebula-sound.git
+    cd nebula-sound
 ```
-2. Create a virtual environment
+2. Python Environment (optional but recommended)
 ```bash
-python -m venv venv
-source venv/bin/activate
+    python -m venv venv
+    source venv/bin/activate  # Linux/macOS
+    venv\Scripts\activate     # Windows
 ```
 3. Install dependencies
 ```bash
-pip install -r requirements.txt
+    pip install -r requirements.txt
 ```
-4. Train the model (only once)
+## 🖥️ Run Locally
+**Gradio UI** (Interactive Demo)
+
 ```bash
-python model/train_model.py
+    python ui/app.py
 ```
-5. Run the backend
+- Open your browser at http://127.0.0.1:7860
+
+- Tabs available:
+
+    1. Song Recommendations
+
+    2. Playlist Generator
+
+    3. Search by Artist
+
+**FastAPI** Backend (Optional)
 ```bash
-uvicorn backend.main:app --reload
+    uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
-6. Open the interface and try your favorite songs
+Endpoints:
 
-## 🔹 Demo
-You can view a working demo at [HuggingFace Spaces / insert link here] (if deploying there)
+- /health → Check API status
 
-## 🔹 Dataset
-Dataset used: Spotify Global Music (2009–2025)
-Source: Kaggle
+- /recommend?track_name=<song> → Recommend songs
 
-Includes global song information such as:
+- /artist?artist_name=<artist> → Search songs by artist
 
-- Danceability
+- /playlist?track_name=<song>&size=<n> → Generate playlist
 
-- Energy
+## 🐳 Docker Deployment
+1. Build Docker image
+```bash
+    podman build -t nebula-sound:latest .
+    # or using docker
+    # docker build -t nebula-sound:latest .
+```
+2. Run Docker container
+```bash
+    podman run -p 7860:7860 nebula-sound:latest
+    # Gradio UI available at http://127.0.0.1:7860
+```
+**Notes**
+- Gradio listens on 0.0.0.0 to expose the interface outside the container.
 
-- Tempo
+- FastAPI can also be run in Docker by changing CMD in Dockerfile.
 
-- Loudness
+## 📦 Project Structure
+```bash
+nebula-sound/
+│── data/                  # Original dataset
+│── model/                 # Trained model and artifacts
+│── backend/
+│    ├── __init__.py
+│    ├── recommender.py    # Recommendation engine
+│    └── main.py           # FastAPI backend
+│── ui/
+│    ├── __init__.py
+│    └── app.py            # Gradio interface
+│── Dockerfile
+│── requirements.txt
+│── README.md
+```
+## 📈 Features
+ - Search by song or artist
 
-- Acousticness
+- Recommend similar tracks
 
-- Valence
+- Generate playlists of configurable size
 
-- Instrumentalness
+- Fully reproducible pipeline
 
-- And more
-
-## 🔹 Project Goals
-- Create a realistic and functional project for your portfolio
-- Showcase skills in:
-    - Applied Machine Learning
-    - API development
-    - UI/UX for demos
-- Prepare a project ready to deploy on VPS or free services
-
-## 🔹 Roadmap
- - Improve search with partial and fuzzy matching
-
- - Add filters by genre, energy, or mood
-
- - Optional integration with official Spotify API
-
- -  Advanced and responsive UI
-
+- Docker-ready for deployment
  ## 🔹 Author
  Miguel Ernesto Morales Molina – Software Engineer
